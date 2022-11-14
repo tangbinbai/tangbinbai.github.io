@@ -28,23 +28,16 @@ var startBunnyCount = 2;
 var isAdding = false;
 var count = 0;
 var container;
-var pixiLogo;
-var clickImage;
 
 var amount = 100;
 
 function onReady()
 {
 	
-	renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor:0xFFFFFF});
-	stage = new PIXI.Stage(0xFFFFFF);
-	//stage.filterArea = new PIXI.math.Rectangle(0, 0, 800 ,600);
+	renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor:0xEEEEEE});
+	stage = new PIXI.Stage(0xEEEEEE);
 
 	amount = (renderer instanceof PIXI.WebGLRenderer) ? 100 : 5;
-//	
-//	bloom = new PIXI.filters.BloomFilter();
-	//stage.filters = [bloom];
-
 	if(amount == 5)
 	{
 		renderer.context.mozImageSmoothingEnabled = false
@@ -56,36 +49,33 @@ function onReady()
 	//alert(amount)
 	document.body.appendChild(renderer.view);
 	renderer.view.style.position = "absolute";
-	stats = new Stats();
-	
-	
-	document.body.appendChild( stats.domElement );
-	stats.domElement.style.position = "absolute";
-	stats.domElement.style.top = "0px";
+
 	requestAnimationFrame(update);
 	
-	wabbitTexture = new PIXI.Texture.fromImage("../img/bunnys.png")
+	wabbitTexture = new PIXI.Texture.fromImage("../img/qq.png")
 
 	counter = document.createElement("div");
 	counter.className = "counter";
 	document.body.appendChild( counter);
-	
-	pixiLogo = document.getElementById("pixi");
-	clickImage = document.getElementById("clickImage");
-	
 	count = startBunnyCount;
-	counter.innerHTML = count + " BUNNIES";
+	counter.innerHTML = "Total: " + count + " sprites";
 	
 	
 	container = new PIXI.DisplayObjectContainer();
 	container = new PIXI.ParticleContainer(200000, [false, true, false, false, false]);
 	stage.addChild(container);
 
-	bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 47, 26, 37));
-	bunny2 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 86, 26, 37));
-	bunny3 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 125, 26, 37));
-	bunny4 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 164, 26, 37));
-	bunny5 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 2, 26, 37));
+	bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(0, 0, 969, 1135));
+	bunny2 = bunny1;
+	bunny3 = bunny1;
+	bunny4 = bunny1;
+	bunny5 = bunny1;
+
+	// bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 47, 26, 37));
+	// bunny2 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 86, 26, 37));
+	// bunny3 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 125, 26, 37));
+	// bunny4 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 164, 26, 37));
+	// bunny5 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 2, 26, 37));
 
 	bunnyTextures = [bunny1, bunny2, bunny3, bunny4, bunny5];
 	bunnyType = 2;
@@ -94,15 +84,14 @@ function onReady()
 	for (var i = 0; i < startBunnyCount; i++) 
 	{
 		var bunny = new PIXI.Sprite(currentTexture);
+		bunny.width = 969 * 0.03;
+		bunny.height = 1135 * 0.03
 		bunny.speedX = Math.random() * 10;
 		bunny.speedY = (Math.random() * 10) - 5;
 		
 		bunny.anchor.x = 0.5;
 		bunny.anchor.y = 1;
-
-
 		bunnys.push(bunny);
-
 	//	bunny.filters = [filter];	
 	//	bunny.position.x = Math.random() * 800;
 	//	bunny.position.y = Math.random() * 600;
@@ -111,13 +100,12 @@ function onReady()
 		container.addChild(bunny);
 	}
 	
-	const canvas=document.getElementsByTagName("canvas")[0];
-
-	canvas.addEventListener("mousedown", () => { 
+	
+	document.addEventListener("mousedown", () => { 
 		isAdding = true;
 	})
 	
-	canvas.addEventListener("mouseup", () => {
+	document.addEventListener("mouseup", () => {
 		bunnyType++
 		bunnyType %= 5;
 		currentTexture = bunnyTextures[bunnyType];
@@ -125,8 +113,8 @@ function onReady()
 		isAdding = false;
 	})
 
-	canvas.addEventListener("touchstart", onTouchStart, true);
-	canvas.addEventListener("touchend", onTouchEnd, true);
+	document.addEventListener("touchstart", onTouchStart, true);
+	document.addEventListener("touchend", onTouchEnd, true);
 	
 	
 	resize();
@@ -152,8 +140,6 @@ function resize()
 	var width = window.innerWidth; 
 	var height = window.innerHeight; 
 	
-	if(width > 800)width  = 800;
-	if(height > 600)height = 600;
 	
 	maxX = width;
 	minX = 0;
@@ -166,24 +152,25 @@ function resize()
 	renderer.view.style.left = window.innerWidth / 2 - width/2 + "px"
 	renderer.view.style.top = window.innerHeight / 2 - height/2 + "px"
 	
-	stats.domElement.style.left = w + "px";
-	stats.domElement.style.top = h + "px";
+
+	counter.style.position = "fixed";
+	counter.style.left =  "0px";
+	counter.style.bottom = "0px";
+	counter.style.fontSize = "14px";
+	counter.style.height = "24px";
+	counter.style.paddingLeft = "5px";
+	counter.style.width = "100%";
+	counter.style.lineHeight = "24px";
+	counter.style.color = "yellow";
+	counter.style.backgroundColor = "rgba(0,0,0,.4)";
 	
-	counter.style.left = w + "px";
-	counter.style.top = h + 49 + "px";
 	
-	pixiLogo.style.right = w  + "px";
-	pixiLogo.style.bottom = h + 8  + "px";
-	
-	clickImage.style.right = w + 108 + "px";
-	clickImage.style.bottom = h + 17  + "px";
 	
 	renderer.resize(width, height);
 }
 
 function update()
 {
-	stats.begin();
 	if(isAdding)
 	{
 		// add 10 at a time :)
@@ -204,15 +191,17 @@ function update()
 				bunny.rotation = (Math.random()-0.5)
 			
 				//bunny.rotation = Math.random() - 0.5;
-				var random = Math2.randomInt(0, container.children.length-2);
+				var random = Math2.randomInt(0, container.children.length - 2);
+
+				bunny.width = 969*0.03;
+				bunny.height = 1135*0.03;
 				container.addChild(bunny)//, random);
 				
 				count++;
 			}
 		}
-	
-		
-		counter.innerHTML = count + " BUNNIES";
+
+		counter.innerHTML = "Total: "+ count + " sprites";
 	}
 	
 	for (var i = 0; i < bunnys.length; i++) 
@@ -255,5 +244,4 @@ function update()
 	
 	renderer.render(stage);
 	requestAnimationFrame(update);
-	stats.end();
 }
