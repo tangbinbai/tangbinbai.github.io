@@ -36,13 +36,8 @@ function onReady()
 	
 	renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor:0xEEEEEE});
 	stage = new PIXI.Stage(0xEEEEEE);
-	//stage.filterArea = new PIXI.math.Rectangle(0, 0, 800 ,600);
 
 	amount = (renderer instanceof PIXI.WebGLRenderer) ? 100 : 5;
-//	
-//	bloom = new PIXI.filters.BloomFilter();
-	//stage.filters = [bloom];
-
 	if(amount == 5)
 	{
 		renderer.context.mozImageSmoothingEnabled = false
@@ -57,20 +52,20 @@ function onReady()
 
 	requestAnimationFrame(update);
 	
-	wabbitTexture = new PIXI.Texture.fromImage("../img/bunnys.png")
+	wabbitTexture = new PIXI.Texture.fromImage("../img/qq.png")
 
 	counter = document.createElement("div");
 	counter.className = "counter";
 	document.body.appendChild( counter);
 	count = startBunnyCount;
-	counter.innerHTML = count + " elements";
+	counter.innerHTML = "Total: " + count + " sprites";
 	
 	
 	container = new PIXI.DisplayObjectContainer();
 	container = new PIXI.ParticleContainer(200000, [false, true, false, false, false]);
 	stage.addChild(container);
 
-	bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 2, 26, 37));
+	bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(0, 0, 969, 1135));
 	bunny2 = bunny1;
 	bunny3 = bunny1;
 	bunny4 = bunny1;
@@ -89,6 +84,8 @@ function onReady()
 	for (var i = 0; i < startBunnyCount; i++) 
 	{
 		var bunny = new PIXI.Sprite(currentTexture);
+		bunny.width = 969 * 0.03;
+		bunny.height = 1135 * 0.03
 		bunny.speedX = Math.random() * 10;
 		bunny.speedY = (Math.random() * 10) - 5;
 		
@@ -103,12 +100,13 @@ function onReady()
 		container.addChild(bunny);
 	}
 	
+
 	
-	document.addEventListener("mousedown", () => { 
+	renderer.view.addEventListener("mousedown", () => { 
 		isAdding = true;
 	})
 	
-	document.addEventListener("mouseup", () => {
+	renderer.view.addEventListener("mouseup", () => {
 		bunnyType++
 		bunnyType %= 5;
 		currentTexture = bunnyTextures[bunnyType];
@@ -116,8 +114,8 @@ function onReady()
 		isAdding = false;
 	})
 
-	document.addEventListener("touchstart", onTouchStart, true);
-	document.addEventListener("touchend", onTouchEnd, true);
+	renderer.view.addEventListener("touchstart", onTouchStart, true);
+	renderer.view.addEventListener("touchend", onTouchEnd, true);
 	
 	
 	resize();
@@ -159,12 +157,12 @@ function resize()
 	counter.style.position = "fixed";
 	counter.style.left =  "0px";
 	counter.style.bottom = "0px";
-	counter.style.fontSize = "12px";
-	counter.style.height = "20px";
+	counter.style.fontSize = "14px";
+	counter.style.height = "24px";
 	counter.style.paddingLeft = "5px";
 	counter.style.width = "100%";
-	counter.style.lineHeight = "20px";
-	counter.style.color = "#fff";
+	counter.style.lineHeight = "24px";
+	counter.style.color = "yellow";
 	counter.style.backgroundColor = "rgba(0,0,0,.4)";
 	
 	
@@ -194,14 +192,17 @@ function update()
 				bunny.rotation = (Math.random()-0.5)
 			
 				//bunny.rotation = Math.random() - 0.5;
-				var random = Math2.randomInt(0, container.children.length-2);
+				var random = Math2.randomInt(0, container.children.length - 2);
+
+				bunny.width = 969*0.03;
+				bunny.height = 1135*0.03;
 				container.addChild(bunny)//, random);
 				
 				count++;
 			}
 		}
 
-		counter.innerHTML = count + " elements";
+		counter.innerHTML = "Total: "+ count + " sprites";
 	}
 	
 	for (var i = 0; i < bunnys.length; i++) 
@@ -239,9 +240,25 @@ function update()
 			bunny.speedY = 0;
 			bunny.position.y = minY;
 		}
-		
 	}
 	
 	renderer.render(stage);
 	requestAnimationFrame(update);
 }
+const addCalculation = document.createElement("div");
+addCalculation.innerHTML = "消耗CPU"
+const addMemory = document.createElement("div");
+addMemory.innerHTML = "消耗内存"
+addCalculation.setAttribute("class", "btn1")
+addMemory.setAttribute("class", "btn2")
+document.body.appendChild(addCalculation);
+document.body.appendChild(addMemory);
+
+
+addCalculation.addEventListener("click", () => { 
+})
+let str = "";
+addMemory.addEventListener("click", () => {
+	str+=new Array(100000000).join("唐斌")
+	console.log(str.length)
+})
